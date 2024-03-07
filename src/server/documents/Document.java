@@ -1,5 +1,6 @@
 package server.documents;
 
+import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 
 public interface Document {
@@ -9,9 +10,12 @@ public interface Document {
     Subscriber emprunteur() ; // Abonné qui a emprunté ce document
     Subscriber reserveur() ; // Abonné qui a réservé ce document
 
-    void reservationPour(Subscriber sub) ;// precondition : ni réservé ni emprunté
-
-    void empruntPar(Subscriber sub);// precondition : libre ou réservé par l’abonné qui vient emprunter
+    // precondition : ni réservé ni emprunté
+    // EmpruntException si ab n’a pas le droit de réserver CE document
+    void reservationPour(Subscriber ab) throws EmpruntException;
+    // precondition : libre ou réservé par l’abonné qui vient emprunter
+// EmpruntException si ab n’a pas le droit d’emprunter CE document
+    void empruntPar(Subscriber ab) throws EmpruntException;
 
     void retour();// retour d’un document ou annulation d‘une réservation
 }
