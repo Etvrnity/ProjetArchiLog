@@ -14,8 +14,8 @@ public interface Document {
     // EmpruntException si ab n’a pas le droit de réserver CE document
     void reservationPour(Subscriber ab) throws EmpruntException;
     // precondition : libre ou réservé par l’abonné qui vient emprunter
-// EmpruntException si ab n’a pas le droit d’emprunter CE document
+    // EmpruntException si ab n’a pas le droit d’emprunter CE document
     void empruntPar(Subscriber ab) throws EmpruntException;
 
-    void retour();// retour d’un document ou annulation d‘une réservation
+    void retour();// retour d’un document ou annulation d'une réservation
 }

@@ -9,6 +9,15 @@ public class DVD implements Document {
     private Subscriber subscriber;
     private boolean borrowed;// == Emprunté
     private boolean adult;
+
+    public DVD(int numero, String title, Subscriber subscriber, boolean borrowed, boolean adult) {
+        this.numero = numero;
+        this.title = title;
+        this.subscriber = subscriber;
+        this.borrowed = borrowed;
+        this.adult = adult;
+    }
+
     @Override
     public int numero() {
         return numero;
@@ -45,5 +54,16 @@ public class DVD implements Document {
     public void retour() {
         //TODO
         subscriber = null;
+    }
+
+    @Override
+    public String toString() {
+        return "DVD{" +
+                "numero=" + numero +
+                ", title='" + title + '\'' +
+                ", subscriber=" + subscriber +
+                ", borrowed=" + borrowed +
+                ", adult=" + adult +
+                '}';
     }
 }

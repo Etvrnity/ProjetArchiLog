@@ -10,6 +10,13 @@ public class Book implements Document {
     private Subscriber subscriber;
     private boolean borrowed;
 
+    public Book(int numero, String title, int number_pages, Subscriber subscriber, boolean borrowed) {
+        this.numero = numero;
+        this.title = title;
+        this.number_pages = number_pages;
+        this.subscriber = subscriber;
+        this.borrowed = borrowed;
+    }
 
 
     @Override
@@ -46,5 +53,16 @@ public class Book implements Document {
     @Override
     public void retour() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "numero=" + numero +
+                ", title='" + title + '\'' +
+                ", number_pages=" + number_pages +
+                ", subscriber=" + subscriber +
+                ", borrowed=" + borrowed +
+                '}';
     }
 }

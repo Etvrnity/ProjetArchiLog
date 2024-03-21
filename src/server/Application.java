@@ -1,9 +1,12 @@
 package server;
 
+import server.documents.Document;
 import server.services.ServiceBooking;
 import server.services.ServiceBorrow;
+import server.subscribers.Subscriber;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Application {
     private final static int PORT_BOOKING = 3000;
