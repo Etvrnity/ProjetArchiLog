@@ -13,6 +13,18 @@ public class Application {
     private static final int PORT_BORROW = 4000;
 
     public static void main(String[] args) {
+        ArrayList<Document> documents = new ArrayList<>();
+        ArrayList<Subscriber> subscribers = new ArrayList<>();
+        BDLink bdLink = new BDLink();
+        bdLink.init_local_from_bd(subscribers,documents);
+
+        for (Document d : documents){
+            System.out.println(d);
+        }
+        for (Subscriber s : subscribers){
+            System.out.println(s);
+        }
+
         try {
             new Thread(new Server(ServiceBooking.class, PORT_BOOKING)).start();
             System.out.println("Serveur lance avec succès sur le port " + PORT_BOOKING);

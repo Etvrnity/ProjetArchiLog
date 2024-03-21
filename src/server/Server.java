@@ -13,7 +13,7 @@ public class Server implements Runnable {
         this.aClass = aClass;
         listen_socket = new ServerSocket(port);
     }
-    
+
     public void run() {
         try {
             while(true) {
@@ -25,10 +25,9 @@ public class Server implements Runnable {
         }
         catch (IOException e) {
             try {this.listen_socket.close();} catch (IOException e1) {}
-            System.err.println("Error on the listening port :"+e);
+            System.err.println("Error on the listening port : "+e);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

@@ -6,7 +6,8 @@ import server.subscribers.Subscriber;
 public class Book implements Document {
 
     private int numero;
-    private String titre;
+    private String title;
+    private int number_pages;
     private Subscriber subscriber;
     private boolean borrowed;
 
