@@ -10,6 +10,7 @@ public class Book implements Document {
     private int number_pages;
     private Subscriber subscriber;
     private boolean borrowed;
+    private boolean booked;
 
     public Book(int numero, String title, int number_pages, Subscriber subscriber, boolean borrowed) {
         this.numero = numero;
@@ -22,7 +23,7 @@ public class Book implements Document {
 
     @Override
     public int numero() {
-        return 0;
+        return  numero;
     }
 
     @Override
@@ -65,5 +66,10 @@ public class Book implements Document {
                 ", subscriber=" + subscriber +
                 ", borrowed=" + borrowed +
                 '}';
+    }
+
+    public void cancelBooking() {
+        this.subscriber = null;
+        this.booked = false;
     }
 }

@@ -13,6 +13,10 @@ public class Subscriber {
         this.birthday = birthday;
     }
 
+    public int getNumber(){
+        return number;
+    }
+
     @Override
     public String toString() {
         return "Subscriber{" +

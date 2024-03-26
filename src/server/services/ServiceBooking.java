@@ -20,8 +20,9 @@ public class ServiceBooking extends GenericService {
             PrintWriter out = new PrintWriter(super.getSocket().getOutputStream(), true);
             out.println("Bonjour, bienvenue sur le service de réservation de documents de la médiathèque");
 
-            out.println("Numéro d'abonné : ");
-            int subscriberNumber = Integer.parseInt(in.readLine());
+            try {
+                out.println("Numéro d'abonné : ");
+                int subscriberNumber = Integer.parseInt(in.readLine());
 
             out.println("Numéro du document : ");
             int documentNumber = Integer.parseInt(in.readLine());

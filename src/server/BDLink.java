@@ -72,7 +72,7 @@ public class BDLink {
 
                 if(rsDoc.getString("is_book").equals("dvd")){
                     doc = new DVD(id_doc, title, subscriber, borrowed, pegi_16);
-                    documents.add(doc);
+                    library.addDocument(doc);
                 }
                 else if(rsDoc.getString("is_book").equals("book")){
                     doc = new Book(id_doc, title, number_pages,subscriber, borrowed);
