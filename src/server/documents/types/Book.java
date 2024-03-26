@@ -1,6 +1,7 @@
 package server.documents.types;
 
 import server.documents.Document;
+import server.documents.DocumentReservable;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
@@ -8,7 +9,7 @@ import timertask.BookingCanceler;
 import java.time.LocalDateTime;
 import java.util.Timer;
 
-public class Book implements Document {
+public class Book extends DocumentReservable {
 
     private int numero;
     private String title;

@@ -1,6 +1,7 @@
 package server.documents.types;
 
 import server.documents.Document;
+import server.documents.DocumentReservable;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
@@ -9,7 +10,7 @@ import java.util.Timer;
 import java.time.LocalDateTime;
 import java.util.TimerTask;
 
-public class DVD implements Document {
+public class DVD extends DocumentReservable {
     private int numero;
     private String title;
     private Subscriber subscriber;
