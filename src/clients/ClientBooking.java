@@ -24,8 +24,13 @@ public class ClientBooking {
 
             String line;
             line = sin.readLine();
-            System.out.print(line);
+            System.out.println(line);
 
+            System.out.print(sin.readLine());
+            String nbSub = clavier.readLine();
+            sout.println(nbSub);
+            System.out.print(sin.readLine());
+            sout.println(clavier.readLine());
             //TODO
 
             socket.close();
