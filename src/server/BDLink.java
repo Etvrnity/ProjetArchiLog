@@ -7,7 +7,6 @@ import server.documents.types.DVD;
 import server.subscribers.Subscriber;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class BDLink {
     private Connection connection;
@@ -37,7 +36,8 @@ public class BDLink {
         } catch (SQLException ignored) { }
     }
 
-    public void init_local_from_bd(ArrayList<Subscriber> subscribers, ArrayList<Document> documents) {
+    public void init_local_from_bd(Library library) {
+
         try {
             Statement stmtSub = connection.createStatement();
             String querySub = "SELECT `id_subscriber`, `name`, `date_naissance` FROM `Subsciber`";
@@ -51,7 +51,7 @@ public class BDLink {
                 Date date = rsSub.getDate("date_naissance");
 
                 sub = new Subscriber(id_subscriber, name, date);
-                subscribers.add(sub);
+                library.addSubsciber(sub);
             }
             rsSub.close();
 
@@ -76,7 +76,7 @@ public class BDLink {
                 }
                 else if(rsDoc.getString("is_book").equals("book")){
                     doc = new Book(id_doc, title, number_pages,subscriber, borrowed);
-                    documents.add(doc);
+                    library.addDocument(doc);
                 } else {
                     System.err.println("error");//TODO
                 }

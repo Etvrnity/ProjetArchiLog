@@ -1,7 +1,12 @@
 package server.documents.types;
 
 import server.documents.Document;
+import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
+import timertask.BookingCanceler;
+
+import java.time.LocalDateTime;
+import java.util.Timer;
 
 public class Book implements Document {
 
@@ -43,12 +48,21 @@ public class Book implements Document {
     }
 
     @Override
-    public void reservationPour(Subscriber sub) {
+    public void reservationPour(Subscriber sub) throws EmpruntException {
+        assert (!borrowed && subscriber == null);//TODO verif ca
+        if (borrowed || booked) {
+            throw new EmpruntException();
+        }
+        subscriber = sub;
+        borrowed = true;
 
+        long twoHours = 2*60*60*1000;
+        Timer t = new Timer("Booking for sub nb " + sub.getNumber() + ", doc nb :" + this.numero);
+        t.schedule(new BookingCanceler(this), twoHours);
     }
 
     @Override
-    public void empruntPar(Subscriber sub) {
+    public void empruntPar(Subscriber sub) throws EmpruntException {
 
     }
 

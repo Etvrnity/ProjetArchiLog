@@ -24,9 +24,18 @@ public class ServiceBooking extends GenericService {
                 out.println("Numéro d'abonné : ");
                 int subscriberNumber = Integer.parseInt(in.readLine());
 
-            out.println("Numéro du document : ");
-            int documentNumber = Integer.parseInt(in.readLine());
-            //TODO
+                out.println("Numéro du document : ");
+                int documentNumber = Integer.parseInt(in.readLine());
+
+                //TODO reservation
+
+
+
+            } catch (NumberFormatException nbE){
+                out.println("Erreur : merci d'entrer un nombre.");
+                return;
+            }
+
 
         } catch (IOException e) {
             //TODO
