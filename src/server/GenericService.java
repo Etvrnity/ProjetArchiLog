@@ -3,11 +3,13 @@ package server;
 import java.net.Socket;
 
 public abstract class GenericService implements Runnable {
+    Socket s;
     public void setSocket(Socket s) {
         this.s = s;
     }
-
-    Socket s;
+    public Socket getClientSocket(){
+        return s;
+    }
 
     public GenericService(Socket s) {
         this.s = s;

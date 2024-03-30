@@ -32,7 +32,8 @@ public class ServiceBooking extends GenericService {
 
 
             } catch (NumberFormatException nbE){
-                out.println("Erreur : merci d'entrer un nombre.");
+                out.println("Erreur : merci d'entrer un nombre.");//TODO voir si on garde ca
+                super.getClientSocket().close();
                 return;
             }
 

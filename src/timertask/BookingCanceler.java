@@ -1,27 +1,19 @@
 package timertask;
 
+import server.documents.DocumentReservable;
 import server.documents.types.*;
 
 import java.util.TimerTask;
 
 public class BookingCanceler extends TimerTask {
-    private DVD dvd;
-    private Book book;
+    private DocumentReservable doc;
 
-    public BookingCanceler(DVD dvd) {
-        this.dvd = dvd;
-    }
-
-    public BookingCanceler(Book book){
-        this.book = book;
+    public BookingCanceler(DocumentReservable doc) {
+        this.doc = doc;
     }
 
     @Override
     public void run() {
-        if(dvd != null){
-            dvd.cancelBooking();
-        }
-        else
-            book.cancelBooking();
+        doc.cancelBooking();
     }
 }
