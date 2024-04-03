@@ -8,9 +8,9 @@ import java.util.Timer;
 
 public abstract class DocumentReservable implements Document {
 
+    public static final long TWO_HOURS = 2 * 60 * 60 * 1000;
     private int numero;
     private String title;
-
     private Subscriber subscriber;
     private boolean borrowed;// == Emprunté
     private boolean booked;// == Réservé
@@ -44,28 +44,49 @@ public abstract class DocumentReservable implements Document {
         return null;
     }
 
+    /**
+     * reservationPour == bookingFor
+     * Precondition : not borrowed and subscriber set to null
+     * @param ab subscriber willing to book
+     * @throws EmpruntException
+     */
     @Override
-    public void reservationPour(Subscriber sub) throws EmpruntException {
-        assert (!borrowed && subscriber == null);//TODO verif ca
+    public void reservationPour(Subscriber ab) throws EmpruntException {
+        //TODO si DVD verif adulte
         if (borrowed || booked) {
             throw new EmpruntException();
         }
-        subscriber = sub;
-        borrowed = true;
+        subscriber = ab;
+        booked = true;
 
-        long twoHours = 2*60*60*1000;
-        Timer t = new Timer("Booking for sub nb " + sub.getNumber() + ", doc nb :" + this.numero);
-        t.schedule(new BookingCanceler(this), twoHours);
+        Timer t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
+        t.schedule(new BookingCanceler(this), TWO_HOURS);
     }
 
+    /**
+     * empruntPar == borrowedBy
+     * @param ab subscriber willing to borrow
+     * @throws EmpruntException
+     */
     @Override
     public void empruntPar(Subscriber ab) throws EmpruntException {
-        //TODO
+        //TODO si DVD verif adulte
+        if(borrowed) {
+            throw new EmpruntException();
+        } else if(!booked && subscriber == null){
+            borrowed = true;
+            subscriber = ab;
+        } else if(booked && (ab.getNumber()== subscriber.getNumber())) {
+             borrowed = true;
+        } else {
+            throw new EmpruntException();
+        }
     }
 
     @Override
     public void retour() {
-        //TODO
+        borrowed = false;
+        booked = false;
         subscriber = null;
     }
 

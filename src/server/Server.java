@@ -8,9 +8,11 @@ import java.net.Socket;
 public class Server implements Runnable {
     private ServerSocket listen_socket;
     private Class<? extends GenericService> aClass;
+    private Library library;
 
-    Server(Class<? extends GenericService> aClass, int port) throws IOException {
+    Server(Class<? extends GenericService> aClass, Library library, int port) throws IOException {
         this.aClass = aClass;
+        this.library = library;
         listen_socket = new ServerSocket(port);
     }
 
@@ -20,6 +22,7 @@ public class Server implements Runnable {
                 Socket client = listen_socket.accept();
                 GenericService s = aClass.getConstructor(Socket.class).newInstance(client);
                 s.setSocket(client);
+                s.setLibrary(library);
                 s.lancer();
             }
         }

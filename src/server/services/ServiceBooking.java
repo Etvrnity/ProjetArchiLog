@@ -1,6 +1,14 @@
 package server.services;
 
 import server.GenericService;
+import server.Library;
+import server.documents.Document;
+import server.documents.types.DVD;
+import server.exceptions.DocumentNotFoundException;
+import server.exceptions.EmpruntException;
+import server.exceptions.NotAdultEmpruntException;
+import server.exceptions.SubscriberNotFoundException;
+import server.subscribers.Subscriber;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,24 +30,36 @@ public class ServiceBooking extends GenericService {
 
             try {
                 out.println("Numéro d'abonné : ");
-                int subscriberNumber = Integer.parseInt(in.readLine());
+                String subscriber = in.readLine();
 
                 out.println("Numéro du document : ");
-                int documentNumber = Integer.parseInt(in.readLine());
+                String document = in.readLine();
 
-                //TODO reservation
+                int subscriberNumber = Integer.parseInt(subscriber);
+                int documentNumber = Integer.parseInt(document);
+
+                Document doc = super.getLibrary().findDocumentFromID(documentNumber);
+                Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
 
 
+                doc.reservationPour(sub);
+
+                out.println("Document réservé.");
 
             } catch (NumberFormatException nbE){
-                out.println("Erreur : merci d'entrer un nombre.");//TODO voir si on garde ca
-                super.getClientSocket().close();
-                return;
+                out.println("Erreur : merci d'entrer un nombre.");
+            } catch (DocumentNotFoundException e) {
+                out.println("Erreur : ce document n'existe pas");
+            } catch (SubscriberNotFoundException e) {
+                out.println("Erreur : cet utilisateur n'existe pas");
+            } catch(NotAdultEmpruntException e){
+                out.println("Erreur : vous n’avez pas l’âge pour emprunter ce DVD");
+            } catch (EmpruntException e) {
+                out.println("Erreur : réservation impossible");
             }
-
-
+            super.getClientSocket().close();
         } catch (IOException e) {
-            //TODO
+            System.out.println("Erreur : " + e.getLocalizedMessage());
         }
     }
 }

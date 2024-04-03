@@ -15,6 +15,14 @@ public class Library {
         subscribers = new ArrayList<>();
     }
 
+    public ArrayList<Document> getDocuments() {
+        return documents;
+    }
+
+    public ArrayList<Subscriber> getSubscribers() {
+        return subscribers;
+    }
+
     public Subscriber findSubsciberFromID(int id) throws SubscriberNotFoundException {
         for (Subscriber s : subscribers)
             if(s.getNumber() == id)
