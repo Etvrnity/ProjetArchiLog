@@ -6,6 +6,8 @@ import timertask.BookingCanceler;
 
 import java.util.Timer;
 
+
+
 public abstract class DocumentReservable implements Document {
 
     public static final long TWO_HOURS = 2 * 60 * 60 * 1000;
@@ -14,6 +16,7 @@ public abstract class DocumentReservable implements Document {
     private Subscriber subscriber;
     private boolean borrowed;// == Emprunté
     private boolean booked;// == Réservé
+    private Timer t;
 
     public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed){
         this.numero = numero;
@@ -58,7 +61,7 @@ public abstract class DocumentReservable implements Document {
         subscriber = ab;
         booked = true;
 
-        Timer t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
+        t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
         t.schedule(new BookingCanceler(this), TWO_HOURS);
     }
 

@@ -3,6 +3,7 @@ package server.services;
 import server.GenericService;
 import server.Library;
 import server.documents.Document;
+import server.documents.DocumentReservable;
 import server.documents.types.DVD;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.EmpruntException;
@@ -40,7 +41,6 @@ public class ServiceBooking extends GenericService {
 
                 Document doc = super.getLibrary().findDocumentFromID(documentNumber);
                 Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
-
 
                 doc.reservationPour(sub);
 
