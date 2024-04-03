@@ -1,4 +1,5 @@
 package server.exceptions;
 
-public class NotAdultEmpruntException extends EmpruntException{
+public class NotAdultEmpruntException extends EmpruntException {
+
 }

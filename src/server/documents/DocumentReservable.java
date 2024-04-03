@@ -52,7 +52,6 @@ public abstract class DocumentReservable implements Document {
      */
     @Override
     public void reservationPour(Subscriber ab) throws EmpruntException {
-        //TODO si DVD verif adulte
         if (borrowed || booked) {
             throw new EmpruntException();
         }
@@ -70,7 +69,6 @@ public abstract class DocumentReservable implements Document {
      */
     @Override
     public void empruntPar(Subscriber ab) throws EmpruntException {
-        //TODO si DVD verif adulte
         if(borrowed) {
             throw new EmpruntException();
         } else if(!booked && subscriber == null){
