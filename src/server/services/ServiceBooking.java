@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 
 public class ServiceBooking extends GenericService {
     public ServiceBooking(Socket s) {
@@ -43,7 +44,11 @@ public class ServiceBooking extends GenericService {
                 Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
 
                 doc.reservationPour(sub);
-                out.println("Document réservé.");
+                /* c'était pour le test bien évidemment c à mettre lorsqu'une autre personne essaie de réserver un document reservé
+                String prout =  ((DocumentReservable) doc).getHourEnd();;
+                out.println("Document réservé jusqu'à " + prout); //*/
+                // TODO quand une personne essaie de réserver un document déjà réservé
+                // lui indiqué jusqu'à quelle heure la réservation est faite
 
             } catch (NumberFormatException nbE){
                 out.println("Erreur : merci d'entrer un nombre.");

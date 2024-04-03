@@ -4,8 +4,10 @@ import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Timer;
 
 
@@ -20,6 +22,7 @@ public abstract class DocumentReservable implements Document {
     private boolean borrowed;// == Emprunté
     private boolean booked;// == Réservé
     private Timer t;
+    private Date HourInTwoHours;
 
     public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed){
         this.numero = numero;
@@ -63,18 +66,19 @@ public abstract class DocumentReservable implements Document {
         }
         subscriber = ab;
         booked = true;
-
+        HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
         t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
         t.schedule(new BookingCanceler(this), TWO_HOURS);
     }
 
-    /*public Date getHourEnd() throws EmpruntException{
-        if (t != null) {
-            return new Date(t.scheduledExecutionTime());
+    public String getHourEnd(){
+        if (HourInTwoHours != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            return dateFormat.format(HourInTwoHours);
         } else {
-            throw new EmpruntException();
+            return "";
         }
-    }*/
+    }
 
     /**
      * empruntPar == borrowedBy
