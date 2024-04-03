@@ -43,7 +43,6 @@ public class ServiceBooking extends GenericService {
                 Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
 
                 doc.reservationPour(sub);
-
                 out.println("Document réservé.");
 
             } catch (NumberFormatException nbE){

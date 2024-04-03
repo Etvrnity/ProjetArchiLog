@@ -4,6 +4,8 @@ import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 
 
@@ -11,6 +13,7 @@ import java.util.Timer;
 public abstract class DocumentReservable implements Document {
 
     public static final long TWO_HOURS = 2 * 60 * 60 * 1000;
+
     private int numero;
     private String title;
     private Subscriber subscriber;
@@ -64,6 +67,14 @@ public abstract class DocumentReservable implements Document {
         t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
         t.schedule(new BookingCanceler(this), TWO_HOURS);
     }
+
+    /*public Date getHourEnd() throws EmpruntException{
+        if (t != null) {
+            return new Date(t.scheduledExecutionTime());
+        } else {
+            throw new EmpruntException();
+        }
+    }*/
 
     /**
      * empruntPar == borrowedBy
