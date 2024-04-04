@@ -25,26 +25,41 @@ public class ServiceBorrow extends GenericService {
             out.println("Bonjour, bienvenue sur le service des emprunts et retours de la médiathèque");
 
             try {
-                //TODO demander si on veut retourner un document + coder
-                out.println("Numéro d'abonné : ");
-                String subscriber = in.readLine();
+                out.println("Quel service désirez-vous ? (emprunt ou retour) : ");
+                String service = in.readLine();
+                if(service.equals("emprunt")){
+                    out.println("Numéro d'abonné : ");
+                    String subscriber = in.readLine();
 
-                out.println("Numéro du document : ");
-                String document = in.readLine();
+                    out.println("Numéro du document : ");
+                    String document = in.readLine();
 
-                int subscriberNumber = Integer.parseInt(subscriber);
-                int documentNumber = Integer.parseInt(document);
+                    int subscriberNumber = Integer.parseInt(subscriber);
+                    int documentNumber = Integer.parseInt(document);
 
-                Document doc = super.getLibrary().findDocumentFromID(documentNumber);
-                Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
+                    Document doc = super.getLibrary().findDocumentFromID(documentNumber);
+                    Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
 
-                doc.empruntPar(sub);
-                out.println("Document emprunté avec succès");
+                    doc.empruntPar(sub);
+                    out.println("Document emprunté avec succès");
+                } else if (service.equals("retour")){
+                    out.println("Numéro du document : ");
+                    String document = in.readLine();
+
+                    int documentNumber = Integer.parseInt(document);
+
+                    Document doc = super.getLibrary().findDocumentFromID(documentNumber);
+
+                    doc.retour();
+                    out.println("Document restitué avec succès");
+                } else {
+                    out.println("Erreur : merci d'entrer un service parmi ceux proposés");
+                }
 
             } catch (NumberFormatException nbE){
                 out.println("Erreur : merci d'entrer un nombre");
             } catch (SubscriberNotFoundException | DocumentNotFoundException | EmpruntException e) {
-                out.println(e.getMessage());//TODO verifier que l'erreur adulte est vérifiée
+                out.println(e.getMessage());
             }
             super.getClientSocket().close();
         } catch (IOException e) {

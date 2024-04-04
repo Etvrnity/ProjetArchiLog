@@ -14,18 +14,24 @@ public class ClientBorrow {
             // Cree une socket pour communiquer avec le service se trouvant sur la machine host au port PORT
             socket = new Socket(host, PORT_BORROW);
             // Cree les streams pour lire et ecrire du texte dans cette socket
-            BufferedReader sin = new BufferedReader (new InputStreamReader(socket.getInputStream ( )));
-            PrintWriter sout = new PrintWriter (socket.getOutputStream ( ), true);
+            BufferedReader sin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter sout = new PrintWriter(socket.getOutputStream(), true);
 
-            String line;
-            line = sin.readLine();
-            System.out.println(line);
+            System.out.println(sin.readLine());
 
             System.out.print(sin.readLine());
-            String nbSub = clavier.readLine();
-            sout.println(nbSub);
-            System.out.print(sin.readLine());
-            sout.println(clavier.readLine());
+            String service = clavier.readLine();
+            sout.println(service);
+
+            if(service.equals("emprunt")){
+                System.out.print(sin.readLine());
+                sout.println(clavier.readLine());
+                System.out.print(sin.readLine());
+                sout.println(clavier.readLine());
+            } else if(service.equals("retour")){
+                System.out.print(sin.readLine());
+                sout.println(clavier.readLine());
+            }
 
             System.out.print(sin.readLine());
         }

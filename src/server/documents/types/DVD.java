@@ -17,18 +17,22 @@ public class DVD extends DocumentReservable {
 
     @Override
     public void reservationPour(Subscriber ab) throws EmpruntException {
-        if(adult && ab.getAge() < ADULT_AGE )
-            throw new NotAdultEmpruntException();
-        else
-            super.reservationPour(ab);
+        synchronized (super.getMe()) {
+            if (adult && ab.getAge() < ADULT_AGE)
+                throw new NotAdultEmpruntException();
+            else
+                super.reservationPour(ab);
+        }
     }
 
     @Override
     public void empruntPar(Subscriber ab) throws EmpruntException {
-        if(adult && ab.getAge() < ADULT_AGE )
-            throw new NotAdultEmpruntException();
-        else
-            super.empruntPar(ab);
+        synchronized (super.getMe()) {
+            if (adult && ab.getAge() < ADULT_AGE)
+                throw new NotAdultEmpruntException();
+            else
+                super.empruntPar(ab);
+        }
     }
 
     @Override

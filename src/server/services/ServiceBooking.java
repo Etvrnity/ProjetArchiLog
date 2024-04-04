@@ -45,7 +45,7 @@ public class ServiceBooking extends GenericService {
             } catch (NumberFormatException nbE){
                 out.println("Erreur : merci d'entrer un nombre");
             } catch (SubscriberNotFoundException | DocumentNotFoundException | EmpruntException e) {
-                out.println(e.getMessage());//TODO verifier que l'erreur adulte est vérifiée
+                out.println(e.getMessage());
             }
             super.getClientSocket().close();
         } catch (IOException e) {

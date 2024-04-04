@@ -14,11 +14,11 @@ public class ClientUnique {
         // Cree le stream pour lire du texte à partir du clavier (on pourrait aussi utiliser Scanner)
         BufferedReader clavier = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.print("Quel service désirez-vous ? (réservation ou emprunt) : ");
+            System.out.print("Quel service désirez-vous ? (réservation ou emprunt/retour) : ");
             String service = clavier.readLine();
             if(service.equals("réservation")){
                 new ClientBooking().launch(HOST, clavier);
-            } else if (service.equals("emprunt")) {
+            } else if (service.equals("emprunt") || service.equals("retour")) {
                 new ClientBorrow().launch(HOST, clavier);
             } else {
                 System.err.println("Merci de rentrer un service parmi ceux proposés.");

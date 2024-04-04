@@ -34,6 +34,22 @@ public abstract class DocumentReservable implements Document {
         return numero;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public Subscriber getSubscriber() {
+        return subscriber;
+    }
+
+    public boolean isBorrowed() {
+        return borrowed;
+    }
+
+    public DocumentReservable getMe() {
+        return this;
+    }
+
     @Override
     public Subscriber emprunteur() {
         if(borrowed){
@@ -58,14 +74,16 @@ public abstract class DocumentReservable implements Document {
      */
     @Override
     public void reservationPour(Subscriber ab) throws EmpruntException {
-        if (borrowed || booked) {
-            throw new EmpruntException();
+        synchronized (this) {
+            if (borrowed || booked) {
+                throw new EmpruntException();
+            }
+            subscriber = ab;
+            booked = true;
+            HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
+            t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
+            t.schedule(new BookingCanceler(this), TWO_HOURS);
         }
-        subscriber = ab;
-        booked = true;
-        HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
-        t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
-        t.schedule(new BookingCanceler(this), TWO_HOURS);
     }
 
     public String getHourEnd(){
@@ -84,42 +102,38 @@ public abstract class DocumentReservable implements Document {
      */
     @Override
     public void empruntPar(Subscriber ab) throws EmpruntException {
-        if(borrowed) {
-            throw new EmpruntException();
-        } else if(!booked && subscriber == null){
-            borrowed = true;
-            subscriber = ab;
-        } else if(booked && (ab.getNumber() == subscriber.getNumber())) {
-             borrowed = true;
-        } else if(booked && (ab.getNumber() != subscriber.getNumber())) {
-            throw new DocumentBookedEmpruntException(this.getHourEnd());
-        } else {
-            throw new EmpruntException();
+        synchronized (this) {
+            if (borrowed) {
+                throw new EmpruntException();
+            } else if (!booked && subscriber == null) {
+                borrowed = true;
+                subscriber = ab;
+            } else if (booked && (ab.getNumber() == subscriber.getNumber())) {
+                borrowed = true;
+            } else if (booked && (ab.getNumber() != subscriber.getNumber())) {
+                throw new DocumentBookedEmpruntException(this.getHourEnd());
+            } else {
+                throw new EmpruntException();
+            }
         }
     }
 
     @Override
     public void retour() {
-        borrowed = false;
-        booked = false;
-        subscriber = null;
+        synchronized (this) {
+            if(borrowed || booked){
+                //TODO pas normal
+            }
+            borrowed = false;
+            booked = false;
+            subscriber = null;
+        }
     }
 
     public void cancelBooking(){
-        this.subscriber = null;
-        this.booked = false;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Subscriber getSubscriber() {
-        return subscriber;
-    }
-
-    public boolean isBorrowed() {
-        return borrowed;
+        synchronized (this) {
+            this.subscriber = null;
+            this.booked = false;
+        }
     }
 }
