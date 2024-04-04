@@ -18,12 +18,6 @@ public class Subscriber {
         return number;
     }
 
-    public Date getBirthday() {
-        return birthday;
-    }
-
-
-
     public int getAge() {
         Calendar birthDate = Calendar.getInstance();
         birthDate.setTime(birthday);

@@ -73,7 +73,7 @@ public class BDLink {
                 }
 
                 boolean borrowed = !(subscriber == null);
-                boolean pegi_16 = rsDoc.getInt("pegi_16") == 0;
+                boolean pegi_16 = rsDoc.getInt("pegi_16") == 1;
                 int number_pages = rsDoc.getInt("number_pages");
 
                 if(rsDoc.getString("is_book").equals("dvd")){
@@ -92,7 +92,7 @@ public class BDLink {
         catch (SQLException e) {
             System.err.println("SQLException: " + e.getLocalizedMessage());
         } catch (SubscriberNotFoundException e) {
-            System.err.println("SubscriberNotFoundException: " + e.getLocalizedMessage());
+            System.err.println("SubscriberNotFoundException: " + e.getMessage());
         }
     }
 }

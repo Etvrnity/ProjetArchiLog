@@ -1,13 +1,10 @@
 package server.services;
 
 import server.GenericService;
-import server.Library;
 import server.documents.Document;
 import server.documents.DocumentReservable;
-import server.documents.types.DVD;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.EmpruntException;
-import server.exceptions.NotAdultEmpruntException;
 import server.exceptions.SubscriberNotFoundException;
 import server.subscribers.Subscriber;
 
@@ -16,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 
 public class ServiceBooking extends GenericService {
     public ServiceBooking(Socket s) {
@@ -44,22 +40,12 @@ public class ServiceBooking extends GenericService {
                 Subscriber sub = super.getLibrary().findSubsciberFromID(subscriberNumber);
 
                 doc.reservationPour(sub);
-                /* c'était pour le test bien évidemment c à mettre lorsqu'une autre personne essaie de réserver un document reservé
-                String prout =  ((DocumentReservable) doc).getHourEnd();;
-                out.println("Document réservé jusqu'à " + prout); //*/
-                // TODO quand une personne essaie de réserver un document déjà réservé
-                // lui indiqué jusqu'à quelle heure la réservation est faite
+                out.println("Document réservé avec succès jusqu'à " + ((DocumentReservable) doc).getHourEnd());
 
             } catch (NumberFormatException nbE){
-                out.println("Erreur : merci d'entrer un nombre.");
-            } catch (DocumentNotFoundException e) {
-                out.println("Erreur : ce document n'existe pas");
-            } catch (SubscriberNotFoundException e) {
-                out.println("Erreur : cet utilisateur n'existe pas");
-            } catch(NotAdultEmpruntException e){
-                out.println("Erreur : vous n’avez pas l’âge pour emprunter ce DVD");
-            } catch (EmpruntException e) {
-                out.println("Erreur : réservation impossible");
+                out.println("Erreur : merci d'entrer un nombre");
+            } catch (SubscriberNotFoundException | DocumentNotFoundException | EmpruntException e) {
+                out.println(e.getMessage());//TODO verifier que l'erreur adulte est vérifiée
             }
             super.getClientSocket().close();
         } catch (IOException e) {

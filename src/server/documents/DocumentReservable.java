@@ -1,16 +1,13 @@
 package server.documents;
 
+import server.exceptions.DocumentBookedEmpruntException;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Timer;
-
-
 
 public abstract class DocumentReservable implements Document {
 
@@ -92,8 +89,10 @@ public abstract class DocumentReservable implements Document {
         } else if(!booked && subscriber == null){
             borrowed = true;
             subscriber = ab;
-        } else if(booked && (ab.getNumber()== subscriber.getNumber())) {
+        } else if(booked && (ab.getNumber() == subscriber.getNumber())) {
              borrowed = true;
+        } else if(booked && (ab.getNumber() != subscriber.getNumber())) {
+            throw new DocumentBookedEmpruntException(this.getHourEnd());
         } else {
             throw new EmpruntException();
         }

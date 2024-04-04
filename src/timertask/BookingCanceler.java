@@ -1,7 +1,6 @@
 package timertask;
 
 import server.documents.DocumentReservable;
-import server.documents.types.*;
 
 import java.util.TimerTask;
 

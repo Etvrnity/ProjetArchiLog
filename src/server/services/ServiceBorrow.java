@@ -1,7 +1,6 @@
 package server.services;
 
 import server.GenericService;
-import server.Library;
 import server.documents.Document;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.EmpruntException;
@@ -26,6 +25,7 @@ public class ServiceBorrow extends GenericService {
             out.println("Bonjour, bienvenue sur le service des emprunts et retours de la médiathèque");
 
             try {
+                //TODO demander si on veut retourner un document + coder
                 out.println("Numéro d'abonné : ");
                 String subscriber = in.readLine();
 
@@ -42,13 +42,9 @@ public class ServiceBorrow extends GenericService {
                 out.println("Document emprunté avec succès");
 
             } catch (NumberFormatException nbE){
-                out.println("Erreur : merci d'entrer un nombre.");
-            } catch (DocumentNotFoundException e) {
-                out.println("Erreur : ce document n'existe pas");
-            } catch (SubscriberNotFoundException e) {
-                out.println("Erreur : cet utilisateur n'existe pas");
-            } catch (EmpruntException e) {
-                out.println("Erreur : emprunt impossible");
+                out.println("Erreur : merci d'entrer un nombre");
+            } catch (SubscriberNotFoundException | DocumentNotFoundException | EmpruntException e) {
+                out.println(e.getMessage());//TODO verifier que l'erreur adulte est vérifiée
             }
             super.getClientSocket().close();
         } catch (IOException e) {
