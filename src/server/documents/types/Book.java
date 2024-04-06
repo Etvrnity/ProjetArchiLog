@@ -5,7 +5,7 @@ import server.subscribers.Subscriber;
 
 public class Book extends DocumentReservable {
 
-    private int number_pages;
+    private final int number_pages;
 
     public Book(int numero, String title, int number_pages, Subscriber subscriber, boolean borrowed) {
         super(numero,title,subscriber,borrowed);

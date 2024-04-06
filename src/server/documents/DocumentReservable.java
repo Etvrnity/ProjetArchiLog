@@ -1,6 +1,6 @@
 package server.documents;
 
-import server.exceptions.DocumentBookedEmpruntException;
+import server.exceptions.DocumentReservedEmpruntException;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
 import timertask.BookingCanceler;
@@ -13,12 +13,12 @@ public abstract class DocumentReservable implements Document {
 
     public static final long TWO_HOURS = 2 * 60 * 60 * 1000;
 
-    private int numero;
-    private String title;
+    private final int numero;
+    private final String title;
     private Subscriber subscriber;
-    private boolean borrowed;// == Emprunté
-    private boolean booked;// == Réservé
-    private Timer t;
+    private boolean borrowed;
+    private boolean reserved;
+    private Timer timer;
     private Date HourInTwoHours;
 
     public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed){
@@ -26,7 +26,7 @@ public abstract class DocumentReservable implements Document {
         this.title = title;
         this.subscriber = subscriber;
         this.borrowed = borrowed;
-        this.booked = false;
+        this.reserved = false;
     }
 
     @Override
@@ -50,6 +50,10 @@ public abstract class DocumentReservable implements Document {
         return this;
     }
 
+    public Timer getTimer() {
+        return timer;
+    }
+
     @Override
     public Subscriber emprunteur() {
         if(borrowed){
@@ -67,7 +71,7 @@ public abstract class DocumentReservable implements Document {
     }
 
     /**
-     * reservationPour == bookingFor
+     * reservationPour == reservationFor
      * Precondition : not borrowed and subscriber set to null
      * @param ab subscriber willing to book
      * @throws EmpruntException
@@ -75,14 +79,14 @@ public abstract class DocumentReservable implements Document {
     @Override
     public void reservationPour(Subscriber ab) throws EmpruntException {
         synchronized (this) {
-            if (borrowed || booked) {
-                throw new EmpruntException();
+            if (borrowed || reserved) {
+                throw new EmpruntException(true);
             }
             subscriber = ab;
-            booked = true;
+            reserved = true;
             HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
-            t = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
-            t.schedule(new BookingCanceler(this), TWO_HOURS);
+            timer = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
+            timer.schedule(new BookingCanceler(this), TWO_HOURS);
         }
     }
 
@@ -104,16 +108,18 @@ public abstract class DocumentReservable implements Document {
     public void empruntPar(Subscriber ab) throws EmpruntException {
         synchronized (this) {
             if (borrowed) {
-                throw new EmpruntException();
-            } else if (!booked && subscriber == null) {
+                throw new EmpruntException(false);
+            } else if (!reserved && subscriber == null) {
                 borrowed = true;
                 subscriber = ab;
-            } else if (booked && (ab.getNumber() == subscriber.getNumber())) {
+                //TODO synchronisation avec la BD
+            } else if (reserved && (ab.getNumber() == subscriber.getNumber())) {
                 borrowed = true;
-            } else if (booked && (ab.getNumber() != subscriber.getNumber())) {
-                throw new DocumentBookedEmpruntException(this.getHourEnd());
+                //TODO synchronisation avec la BD
+            } else if (reserved && (ab.getNumber() != subscriber.getNumber())) {
+                throw new DocumentReservedEmpruntException(this.getHourEnd());
             } else {
-                throw new EmpruntException();
+                throw new EmpruntException(false);
             }
         }
     }
@@ -121,19 +127,21 @@ public abstract class DocumentReservable implements Document {
     @Override
     public void retour() {
         synchronized (this) {
-            if(borrowed || booked){
-                //TODO pas normal
+            if(borrowed || reserved){
+                // cette situation est anormale, mais le prototype de retour()
+                // dans l'interface Document ne permet pas de lever une exception
             }
             borrowed = false;
-            booked = false;
+            reserved = false;
             subscriber = null;
+            //TODO synchronisation avec la BD
         }
     }
 
     public void cancelBooking(){
         synchronized (this) {
             this.subscriber = null;
-            this.booked = false;
+            this.reserved = false;
         }
     }
 }

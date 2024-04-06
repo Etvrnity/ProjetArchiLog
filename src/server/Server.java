@@ -6,8 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server implements Runnable {
-    private ServerSocket listen_socket;
-    private Class<? extends GenericService> aClass;
+    private final ServerSocket listen_socket;
+    private final Class<? extends GenericService> aClass;
     private Library library;
 
     Server(Class<? extends GenericService> aClass, Library library, int port) throws IOException {
@@ -27,7 +27,9 @@ public class Server implements Runnable {
             }
         }
         catch (IOException e) {
-            try {this.listen_socket.close();} catch (IOException e1) {}
+            try {
+                this.listen_socket.close();
+            } catch (IOException ignored) {}
             System.err.println("Error on the listening port : "+e);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);

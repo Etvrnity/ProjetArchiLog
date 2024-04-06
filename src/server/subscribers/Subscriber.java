@@ -4,9 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Subscriber {
-    private int number;
-    private String name;
-    private Date birthday;
+    private final int number;
+    private final String name;
+    private final Date birthday;
 
     public Subscriber(int number, String name, Date birthday) {
         this.number = number;

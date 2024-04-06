@@ -6,7 +6,7 @@ public class EmpruntException extends Exception {
         super(message);
     }
 
-    public EmpruntException() {
-        super("Erreur : réservation/emprunt impossible");//TODO différenciation
+    public EmpruntException(boolean isReservation) {
+        super(isReservation ? "Erreur : réservation impossible" : "Erreur : emprunt impossible");
     }
 }

@@ -7,7 +7,7 @@ import server.subscribers.Subscriber;
 
 public class DVD extends DocumentReservable {
 
-    private boolean adult;
+    private final boolean adult;
     private static final int ADULT_AGE = 16;
 
     public DVD(int numero, String title, Subscriber subscriber, boolean borrowed, boolean adult) {

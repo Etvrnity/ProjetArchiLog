@@ -5,7 +5,7 @@ import server.documents.DocumentReservable;
 import java.util.TimerTask;
 
 public class BookingCanceler extends TimerTask {
-    private DocumentReservable doc;
+    private final DocumentReservable doc;
 
     public BookingCanceler(DocumentReservable doc) {
         this.doc = doc;
