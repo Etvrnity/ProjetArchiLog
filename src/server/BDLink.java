@@ -57,7 +57,7 @@ public class BDLink {
 
 
             Statement stmtDoc = connection.createStatement();
-            String queryDoc = "SELECT `id_document`, `title`, `is_book`, `number_pages`, `pegi_16`, `id_subsciber` FROM `Document`";
+            String queryDoc = "SELECT `id_document`, `title`, `is_book`, `number_pages`, `pegi_16`, `id_subscriber` FROM `Document`";
             ResultSet rsDoc = stmtDoc.executeQuery(queryDoc);
 
             Document doc;
@@ -67,7 +67,7 @@ public class BDLink {
                 String title = rsDoc.getString("title");
 
                 Subscriber subscriber = null;
-                int idSub = rsDoc.getInt("id_subsciber");
+                int idSub = rsDoc.getInt("id_subscriber");
                 if(!(rsDoc.wasNull())){
                     subscriber = library.findSubsciberFromID(idSub);
                 }
@@ -77,11 +77,11 @@ public class BDLink {
                 int number_pages = rsDoc.getInt("number_pages");
 
                 if(rsDoc.getString("is_book").equals("dvd")){
-                    doc = new DVD(id_doc, title, subscriber, borrowed, pegi_16);
+                    doc = new DVD(id_doc, title, subscriber, borrowed, pegi_16, this);
                     library.addDocument(doc);
                 }
                 else if(rsDoc.getString("is_book").equals("book")){
-                    doc = new Book(id_doc, title, number_pages, subscriber, borrowed);
+                    doc = new Book(id_doc, title, number_pages, subscriber, borrowed, this);
                     library.addDocument(doc);
                 } else {
                     System.err.println("Error : the local library could not be initialized correctly");
@@ -93,6 +93,27 @@ public class BDLink {
             System.err.println("SQLException: " + e.getLocalizedMessage());
         } catch (SubscriberNotFoundException e) {
             System.err.println("SubscriberNotFoundException: " + e.getMessage());
+        }
+    }
+
+    public void addBorrowToBD(int numSubscriber, int numDocument) {
+        try {
+            PreparedStatement updateBorrow = connection.prepareStatement("UPDATE Document SET id_subscriber = ? WHERE id_document = ?");
+            updateBorrow.setInt(1, numSubscriber);
+            updateBorrow.setInt(2, numDocument);
+            updateBorrow.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void removeBorrowFromBD(int numDocument) {
+        try {
+            PreparedStatement updateBorrow = connection.prepareStatement("UPDATE Document SET id_subscriber = NULL WHERE id_document = ?");
+            updateBorrow.setInt(1, numDocument);
+            updateBorrow.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getLocalizedMessage());
         }
     }
 }

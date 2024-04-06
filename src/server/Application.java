@@ -14,10 +14,11 @@ public class Application {
     private static Library library;
 
     public static void main(String[] args) {
-        library = new Library();
-
         BDLink bdLink = new BDLink();
-        bdLink.init_local_from_bd(library);
+
+        library = new Library(bdLink);
+
+        library.init_local_from_bd();
 
         if (DEBUG) {
             System.out.println("=== initialisation de la base locale ===");

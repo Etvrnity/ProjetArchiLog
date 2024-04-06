@@ -1,5 +1,10 @@
 package server.documents;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+
+import server.BDLink;
 import server.exceptions.DocumentReservedEmpruntException;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
@@ -7,6 +12,7 @@ import timertask.BookingCanceler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Timer;
 
 public abstract class DocumentReservable implements Document {
@@ -20,13 +26,15 @@ public abstract class DocumentReservable implements Document {
     private boolean reserved;
     private Timer timer;
     private Date HourInTwoHours;
+    private BDLink bdLink;
 
-    public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed){
+    public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed, BDLink bdLink){
         this.numero = numero;
         this.title = title;
         this.subscriber = subscriber;
         this.borrowed = borrowed;
         this.reserved = false;
+        this.bdLink = bdLink;
     }
 
     @Override
@@ -112,10 +120,10 @@ public abstract class DocumentReservable implements Document {
             } else if (!reserved && subscriber == null) {
                 borrowed = true;
                 subscriber = ab;
-                //TODO synchronisation avec la BD
+                this.bdLink.addBorrowToBD(ab.getNumber(), this.numero);
             } else if (reserved && (ab.getNumber() == subscriber.getNumber())) {
                 borrowed = true;
-                //TODO synchronisation avec la BD
+                this.bdLink.addBorrowToBD(ab.getNumber(), this.numero);
             } else if (reserved && (ab.getNumber() != subscriber.getNumber())) {
                 throw new DocumentReservedEmpruntException(this.getHourEnd());
             } else {
@@ -134,7 +142,7 @@ public abstract class DocumentReservable implements Document {
             borrowed = false;
             reserved = false;
             subscriber = null;
-            //TODO synchronisation avec la BD
+            this.bdLink.removeBorrowFromBD(this.numero);
         }
     }
 
@@ -142,6 +150,40 @@ public abstract class DocumentReservable implements Document {
         synchronized (this) {
             this.subscriber = null;
             this.reserved = false;
+            sendMail();
+        }
+    }
+
+    public void sendMail() {
+
+        Dotenv dotenv = Dotenv.load();
+        String from = dotenv.get("EMAIL_FROM");
+        String to = dotenv.get("EMAIL_TO");
+        String password = dotenv.get("PASSWORD_MAIL");
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", dotenv.get("EMAIL_HOST"));
+        props.put("mail.smtp.port", dotenv.get("EMAIL_PORT"));
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject("Expiration de la réservation");
+            message.setText("La réservation du document n°" + this.numero + " est arrivé à expiration.");
+
+            Transport.send(message);
+
+        } catch (MessagingException e) {
+            System.err.println("Erreur + " + e.getLocalizedMessage());
         }
     }
 }

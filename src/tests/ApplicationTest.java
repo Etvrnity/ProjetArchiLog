@@ -12,17 +12,17 @@ class ApplicationTest {
 
     @Test
     void findSubsciberFromID() {
-        Library lib = new Library();
         BDLink bdLink = new BDLink();
-        bdLink.init_local_from_bd(lib);
+        Library lib = new Library(bdLink);
+        lib.init_local_from_bd();
         assertThrows(SubscriberNotFoundException.class, () -> {lib.findSubsciberFromID(0);});
     }
 
     @Test
     void findDocumentFromID() {
-        Library lib = new Library();
         BDLink bdLink = new BDLink();
-        bdLink.init_local_from_bd(lib);
+        Library lib = new Library(bdLink);
+        lib.init_local_from_bd();
         assertThrows(DocumentNotFoundException.class, () -> {lib.findDocumentFromID(0);});
     }
 }

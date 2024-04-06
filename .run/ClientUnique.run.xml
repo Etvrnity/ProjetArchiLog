@@ -2,7 +2,7 @@
   <configuration default="false" name="ClientUnique" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="clients.ClientUnique" />
     <module name="ProjetArchiLog" />
-    <option name="PROGRAM_PARAMETERS" value="retour" />
+    <option name="PROGRAM_PARAMETERS" value="réservation" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="clients.*" />

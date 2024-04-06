@@ -9,10 +9,15 @@ import java.util.ArrayList;
 
 public class Library {
     private ArrayList<Document> documents;
+
     private ArrayList<Subscriber> subscribers;
-    public Library(){
+
+    private final BDLink bdLink;
+
+    public Library(BDLink bdLink){
         documents = new ArrayList<>();
         subscribers = new ArrayList<>();
+        this.bdLink = bdLink;
     }
 
     public ArrayList<Document> getDocuments() {
@@ -45,4 +50,7 @@ public class Library {
         this.documents.add(doc);
     }
 
+    public void init_local_from_bd() {
+        this.bdLink.init_local_from_bd(this);
+    }
 }

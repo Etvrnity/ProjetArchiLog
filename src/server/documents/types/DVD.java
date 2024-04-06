@@ -1,5 +1,6 @@
 package server.documents.types;
 
+import server.BDLink;
 import server.documents.DocumentReservable;
 import server.exceptions.EmpruntException;
 import server.exceptions.NotAdultEmpruntException;
@@ -10,8 +11,8 @@ public class DVD extends DocumentReservable {
     private final boolean adult;
     private static final int ADULT_AGE = 16;
 
-    public DVD(int numero, String title, Subscriber subscriber, boolean borrowed, boolean adult) {
-        super(numero, title, subscriber, borrowed);
+    public DVD(int numero, String title, Subscriber subscriber, boolean borrowed, boolean adult, BDLink bdLink) {
+        super(numero, title, subscriber, borrowed, bdLink);
         this.adult = adult;
     }
 
