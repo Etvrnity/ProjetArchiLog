@@ -14,10 +14,10 @@ public class Library {
 
     private final BDLink bdLink;
 
-    public Library(BDLink bdLink){
+    public Library(){
         documents = new ArrayList<>();
         subscribers = new ArrayList<>();
-        this.bdLink = bdLink;
+        this.bdLink = new BDLink();
     }
 
     public ArrayList<Document> getDocuments() {

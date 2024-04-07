@@ -1,10 +1,10 @@
-package server.services;
+package server.services.types;
 
-import server.GenericService;
 import server.documents.Document;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.EmpruntException;
 import server.exceptions.SubscriberNotFoundException;
+import server.services.GenericService;
 import server.subscribers.Subscriber;
 
 import java.io.BufferedReader;

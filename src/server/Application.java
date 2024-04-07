@@ -1,8 +1,8 @@
 package server;
 
 import server.documents.Document;
-import server.services.ServiceReservation;
-import server.services.ServiceBorrow;
+import server.services.types.ServiceReservation;
+import server.services.types.ServiceBorrow;
 import server.subscribers.Subscriber;
 
 import java.io.IOException;
@@ -14,10 +14,7 @@ public class Application {
     private static Library library;
 
     public static void main(String[] args) {
-        BDLink bdLink = new BDLink();
-
-        library = new Library(bdLink);
-
+        library = new Library();
         library.init_local_from_bd();
 
         if (DEBUG) {
