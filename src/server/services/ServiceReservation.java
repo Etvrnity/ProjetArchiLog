@@ -14,8 +14,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServiceBooking extends GenericService {
-    public ServiceBooking(Socket s) {
+public class ServiceReservation extends GenericService {
+    public ServiceReservation(Socket s) {
         super(s);
     }
 

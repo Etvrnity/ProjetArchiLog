@@ -4,15 +4,15 @@ import server.documents.DocumentReservable;
 
 import java.util.TimerTask;
 
-public class BookingCanceler extends TimerTask {
+public class ReservationCanceler extends TimerTask {
     private final DocumentReservable doc;
 
-    public BookingCanceler(DocumentReservable doc) {
+    public ReservationCanceler(DocumentReservable doc) {
         this.doc = doc;
     }
 
     @Override
     public void run() {
-        doc.cancelBooking();
+        doc.cancelReservation();
     }
 }

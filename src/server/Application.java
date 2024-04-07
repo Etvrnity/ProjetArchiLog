@@ -1,14 +1,14 @@
 package server;
 
 import server.documents.Document;
-import server.services.ServiceBooking;
+import server.services.ServiceReservation;
 import server.services.ServiceBorrow;
 import server.subscribers.Subscriber;
 
 import java.io.IOException;
 
 public class Application {
-    private final static int PORT_BOOKING = 3000;
+    private final static int PORT_RESERVATION = 3000;
     private static final int PORT_BORROW = 4000;
     private static final boolean DEBUG = false;
     private static Library library;
@@ -35,8 +35,8 @@ public class Application {
 
 
         try {
-            new Thread(new Server(ServiceBooking.class, library, PORT_BOOKING)).start();
-            System.out.println("Serveur lancé avec succès sur le port " + PORT_BOOKING);
+            new Thread(new Server(ServiceReservation.class, library, PORT_RESERVATION)).start();
+            System.out.println("Serveur lancé avec succès sur le port " + PORT_RESERVATION);
             new Thread(new Server(ServiceBorrow.class, library, PORT_BORROW)).start();
             System.out.println("Serveur lancé avec succès sur le port " + PORT_BORROW);
         } catch (IOException e) {

@@ -1,6 +1,6 @@
 package clients;
 
-import clients.types.ClientBooking;
+import clients.types.ClientReservation;
 import clients.types.ClientBorrow;
 
 public class ClientUnique {
@@ -13,7 +13,7 @@ public class ClientUnique {
         }
         String service = args[0];
         if(service.equals("réservation")){
-            new ClientBooking().launch(HOST);
+            new ClientReservation().launch(HOST);
         } else if (service.equals("emprunt") || service.equals("retour")) {
             new ClientBorrow().launch(HOST);
         } else {

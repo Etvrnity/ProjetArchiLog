@@ -8,7 +8,7 @@ import server.BDLink;
 import server.exceptions.DocumentReservedEmpruntException;
 import server.exceptions.EmpruntException;
 import server.subscribers.Subscriber;
-import timertask.BookingCanceler;
+import timertask.ReservationCanceler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -93,8 +93,8 @@ public abstract class DocumentReservable implements Document {
             subscriber = ab;
             reserved = true;
             HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
-            timer = new Timer("Booking for sub nb " + ab.getNumber() + ", doc nb :" + this.numero);
-            timer.schedule(new BookingCanceler(this), TWO_HOURS);
+            timer = new Timer("Reservation for subscriber n°" + ab.getNumber() + ", document n°" + this.numero);
+            timer.schedule(new ReservationCanceler(this), TWO_HOURS);
         }
     }
 
@@ -146,7 +146,7 @@ public abstract class DocumentReservable implements Document {
         }
     }
 
-    public void cancelBooking(){
+    public void cancelReservation(){
         synchronized (this) {
             this.subscriber = null;
             this.reserved = false;
