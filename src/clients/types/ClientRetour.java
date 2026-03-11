@@ -6,29 +6,22 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientReservation {
-    private final static int PORT_RESERVATION = 2000;
+public class ClientRetour {
+    private static final int PORT_RETOUR = 2002;
 
     public void launch(String host) {
         Socket socket = null;
         try {
-            // Cree le stream pour lire du texte à partir du clavier (on pourrait aussi
-            // utiliser Scanner)
+            // Cree le stream pour lire du texte à partir du clavier
             BufferedReader clavier = new BufferedReader(new InputStreamReader(System.in));
-            // Cree une socket pour communiquer avec le service se trouvant sur la machine
-            // host au port PORT
-            socket = new Socket(host, PORT_RESERVATION);
+            // Cree une socket pour communiquer avec le service de retour
+            socket = new Socket(host, PORT_RETOUR);
             // Cree les streams pour lire et ecrire du texte dans cette socket
             BufferedReader sin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter sout = new PrintWriter(socket.getOutputStream(), true);
 
-            String line;
-            line = sin.readLine();
-            System.out.println(line);
+            System.out.println(sin.readLine());
 
-            System.out.print(sin.readLine());
-            String nbAb = clavier.readLine();
-            sout.println(nbAb);
             System.out.print(sin.readLine());
             sout.println(clavier.readLine());
 

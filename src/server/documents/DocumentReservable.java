@@ -4,10 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
-import server.BDLink;
 import server.exceptions.DocumentReservedEmpruntException;
 import server.exceptions.EmpruntException;
-import server.subscribers.Subscriber;
+import server.exceptions.ReservationException;
+import server.exceptions.RetourException;
+import server.subscribers.Abonne;
 import server.timertasks.ReservationCanceler;
 
 import java.text.SimpleDateFormat;
@@ -21,24 +22,26 @@ public abstract class DocumentReservable implements Document {
 
     private final int numero;
     private final String title;
-    private Subscriber subscriber;
+    private Abonne abonne;
     private boolean borrowed;
     private boolean reserved;
     private Timer timer;
     private Date HourInTwoHours;
-    private BDLink bdLink;
 
-    public DocumentReservable(int numero, String title, Subscriber subscriber, boolean borrowed, BDLink bdLink){
+    public DocumentReservable(int numero, String title) {
         this.numero = numero;
         this.title = title;
-        this.subscriber = subscriber;
-        this.borrowed = borrowed;
+        this.abonne = null;
+        this.borrowed = false;
         this.reserved = false;
-        this.bdLink = bdLink;
     }
 
     @Override
-    public int numero() {
+    public String idDoc() {
+        return String.valueOf(numero);
+    }
+
+    public int getNumero() {
         return numero;
     }
 
@@ -46,59 +49,43 @@ public abstract class DocumentReservable implements Document {
         return title;
     }
 
-    public Subscriber getSubscriber() {
-        return subscriber;
+    public Abonne getAbonne() {
+        return abonne;
     }
 
     public boolean isBorrowed() {
         return borrowed;
     }
 
-    public DocumentReservable getMe() {
-        return this;
-    }
-
     public Timer getTimer() {
         return timer;
     }
 
-    @Override
-    public Subscriber emprunteur() {
-        if(borrowed){
-            return subscriber;
-        }
-        return null;
-    }
-
-    @Override
-    public Subscriber reserveur() {
-        if(!borrowed){
-            return subscriber;
-        }
-        return null;
-    }
-
     /**
-     * reservationPour == reservationFor
-     * Precondition : not borrowed and subscriber set to null
-     * @param ab subscriber willing to book
-     * @throws EmpruntException
+     * Réservation d'un document par un abonné.
+     * Précondition : le document n'est ni emprunté ni réservé.
+     * 
+     * @param ab abonné souhaitant réserver
+     * @throws ReservationException si le document est déjà réservé ou emprunté
      */
     @Override
-    public void reservationPour(Subscriber ab) throws EmpruntException {
+    public void reservation(Abonne ab) throws ReservationException {
         synchronized (this) {
-            if (borrowed || reserved) {
-                throw new EmpruntException(true);
+            if (borrowed) {
+                throw new ReservationException("Erreur : ce document est déjà emprunté");
             }
-            subscriber = ab;
+            if (reserved) {
+                throw new ReservationException("Erreur : ce document est déjà réservé jusqu'à " + getHourEnd());
+            }
+            abonne = ab;
             reserved = true;
             HourInTwoHours = new Date(System.currentTimeMillis() + TWO_HOURS);
-            timer = new Timer("Reservation for subscriber n°" + ab.getNumber() + ", document n°" + this.numero);
+            timer = new Timer("Reservation for abonne n°" + ab.getNumber() + ", document n°" + this.numero);
             timer.schedule(new ReservationCanceler(this), TWO_HOURS);
         }
     }
 
-    public String getHourEnd(){
+    public String getHourEnd() {
         if (HourInTwoHours != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             return dateFormat.format(HourInTwoHours);
@@ -108,47 +95,51 @@ public abstract class DocumentReservable implements Document {
     }
 
     /**
-     * empruntPar == borrowedBy
-     * @param ab subscriber willing to borrow
-     * @throws EmpruntException
+     * Emprunt d'un document par un abonné.
+     * 
+     * @param ab abonné souhaitant emprunter
+     * @throws EmpruntException si le document est déjà emprunté ou réservé par un
+     *                          autre
      */
     @Override
-    public void empruntPar(Subscriber ab) throws EmpruntException {
+    public void emprunt(Abonne ab) throws EmpruntException {
         synchronized (this) {
             if (borrowed) {
-                throw new EmpruntException(false);
-            } else if (!reserved && subscriber == null) {
+                throw new EmpruntException("Erreur : ce document est déjà emprunté");
+            } else if (!reserved && abonne == null) {
                 borrowed = true;
-                subscriber = ab;
-                this.bdLink.addBorrowToBD(ab.getNumber(), this.numero);
-            } else if (reserved && (ab.getNumber() == subscriber.getNumber())) {
+                abonne = ab;
+            } else if (reserved && (ab.getNumber() == abonne.getNumber())) {
                 borrowed = true;
-                this.bdLink.addBorrowToBD(ab.getNumber(), this.numero);
-            } else if (reserved && (ab.getNumber() != subscriber.getNumber())) {
+                reserved = false;
+            } else if (reserved && (ab.getNumber() != abonne.getNumber())) {
                 throw new DocumentReservedEmpruntException(this.getHourEnd());
             } else {
-                throw new EmpruntException(false);
+                throw new EmpruntException("Erreur : emprunt impossible");
             }
         }
     }
 
+    /**
+     * Retour d'un document ou annulation d'une réservation.
+     * 
+     * @throws RetourException si le document n'est ni emprunté ni réservé
+     */
     @Override
-    public void retour() {
+    public void retour() throws RetourException {
         synchronized (this) {
-            if(borrowed || reserved){
-                // cette situation est anormale, mais le prototype de retour()
-                // dans l'interface Document ne permet pas de lever une exception
+            if (!borrowed && !reserved) {
+                throw new RetourException("Erreur : ce document n'est ni emprunté ni réservé");
             }
             borrowed = false;
             reserved = false;
-            subscriber = null;
-            this.bdLink.removeBorrowFromBD(this.numero);
+            abonne = null;
         }
     }
 
-    public void cancelReservation(){
+    public void cancelReservation() {
         synchronized (this) {
-            this.subscriber = null;
+            this.abonne = null;
             this.reserved = false;
             sendMail();
         }

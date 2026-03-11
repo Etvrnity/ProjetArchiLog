@@ -1,21 +1,19 @@
 package server.documents;
 
 import server.exceptions.EmpruntException;
-import server.subscribers.Subscriber;
+import server.exceptions.ReservationException;
+import server.exceptions.RetourException;
+import server.subscribers.Abonne;
 
 public interface Document {
-    int numero();
+    String idDoc();
 
-    // return null si pas emprunté ou pas réservé
-    Subscriber emprunteur() ; // Abonné qui a emprunté ce document
-    Subscriber reserveur() ; // Abonné qui a réservé ce document
+    // exception si déjà réservé ou emprunté
+    void reservation(Abonne ab) throws ReservationException;
 
-    // precondition : ni réservé ni emprunté
-    // EmpruntException si ab n’a pas le droit de réserver CE document
-    void reservationPour(Subscriber ab) throws EmpruntException;
-    // precondition : libre ou réservé par l’abonné qui vient emprunter
-    // EmpruntException si ab n’a pas le droit d’emprunter CE document
-    void empruntPar(Subscriber ab) throws EmpruntException;
+    // exception si réservé pour un autre abonné ou déjà emprunté
+    void emprunt(Abonne ab) throws EmpruntException;
 
-    void retour();// retour d’un document ou annulation d'une réservation
+    // sert au retour d'un document ou à l'annulation d'une réservation
+    void retour() throws RetourException;
 }

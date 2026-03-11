@@ -1,9 +1,8 @@
 package server.services.types;
 
 import server.documents.Document;
-import server.documents.DocumentReservable;
 import server.exceptions.DocumentNotFoundException;
-import server.exceptions.ReservationException;
+import server.exceptions.EmpruntException;
 import server.exceptions.SubscriberNotFoundException;
 import server.services.GenericService;
 import server.subscribers.Abonne;
@@ -14,8 +13,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServiceReservation extends GenericService {
-    public ServiceReservation(Socket s) {
+public class ServiceEmprunt extends GenericService {
+    public ServiceEmprunt(Socket s) {
         super(s);
     }
 
@@ -24,7 +23,7 @@ public class ServiceReservation extends GenericService {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(super.getSocket().getInputStream()));
             PrintWriter out = new PrintWriter(super.getSocket().getOutputStream(), true);
-            out.println("Bonjour, bienvenue sur le service de réservation de documents de la médiathèque");
+            out.println("Bonjour, bienvenue sur le service d'emprunt de documents de la médiathèque");
 
             try {
                 out.println("Numéro d'abonné : ");
@@ -39,12 +38,12 @@ public class ServiceReservation extends GenericService {
                 Document doc = super.getLibrary().findDocumentFromID(documentNumber);
                 Abonne ab = super.getLibrary().findAbonneFromID(abonneNumber);
 
-                doc.reservation(ab);
-                out.println("Document réservé avec succès jusqu'à " + ((DocumentReservable) doc).getHourEnd());
+                doc.emprunt(ab);
+                out.println("Document emprunté avec succès");
 
             } catch (NumberFormatException nbE) {
                 out.println("Erreur : merci d'entrer un nombre");
-            } catch (SubscriberNotFoundException | DocumentNotFoundException | ReservationException e) {
+            } catch (SubscriberNotFoundException | DocumentNotFoundException | EmpruntException e) {
                 out.println(e.getMessage());
             }
             super.getClientSocket().close();
