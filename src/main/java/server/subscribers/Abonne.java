@@ -9,7 +9,6 @@ public class Abonne {
     private final String name;
     private final Date birthday;
 
-    // --- Certification BretteSoft Géronimo ---
     private Date bannedUntil;
 
     public Abonne(int number, String name, Date birthday) {

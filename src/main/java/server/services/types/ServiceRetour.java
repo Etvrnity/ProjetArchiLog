@@ -25,8 +25,8 @@ public class ServiceRetour extends GenericService {
     @Override
     public void run() {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(super.getSocket().getInputStream()));
-            PrintWriter out = new PrintWriter(super.getSocket().getOutputStream(), true);
+            BufferedReader in  = new BufferedReader(new InputStreamReader(super.getSocket().getInputStream()));
+            PrintWriter    out = new PrintWriter(super.getSocket().getOutputStream(), true);
             out.println("Bonjour, bienvenue sur le service de retour de documents de la médiathèque");
 
             try {
@@ -34,45 +34,48 @@ public class ServiceRetour extends GenericService {
                 String document = in.readLine();
 
                 int documentNumber = Integer.parseInt(document);
-
                 Document doc = super.getLibrary().findDocumentByID(documentNumber);
 
-                // --- Certification BretteSoft Géronimo ---
-                Abonne borrower = null;
-                Date borrowDate = null;
-                if (doc instanceof DocumentReservable dr) {
-                    if (dr.isBorrowed()) {
-                        borrower = dr.getAbonne();
-                        borrowDate = dr.getBorrowDate();
-                    }
-                }
-                doc.retour();
-                out.println("Document restitué avec succès");
+                Abonne borrower  = null;
+                Date   borrowDate = null;
 
-                // --- Certification BretteSoft© Géronimo ---
-                if (borrower != null) {
-                    if (borrowDate != null) {
-                        long dureeMs = System.currentTimeMillis() - borrowDate.getTime();
-                        if (dureeMs > TWO_WEEKS_MS) {
-                            borrower.ban();
-                            out.println("Avertissement : retour en retard de plus de 2 semaines !");
-                            out.println(borrower.getName() + " est banni de la médiathèque pour 1 mois.");
-                        }
-                    }
+                if (doc instanceof DocumentReservable dr && dr.isBorrowed()) {
+                    borrower  = dr.getAbonne();
+                    borrowDate = dr.getBorrowDate();
+
                     out.println("Le document est-il endommagé ? (oui/non) : ");
                     String reponse = in.readLine();
-                    if (reponse != null && reponse.trim().equalsIgnoreCase("oui")) {
+                    boolean damaged = reponse != null && reponse.trim().equalsIgnoreCase("oui");
+
+                    doc.retour();
+                    out.println("Document restitué avec succès");
+
+                    boolean lateReturn = borrowDate != null &&
+                            (System.currentTimeMillis() - borrowDate.getTime()) > TWO_WEEKS_MS;
+
+                    if (damaged || lateReturn) {
                         borrower.ban();
-                        out.println("Avertissement : dégradation de document constatée !");
+                        if (damaged && lateReturn) {
+                            out.println("Avertissement : retard de plus de 2 semaines ET dégradation constatée !");
+                        } else if (damaged) {
+                            out.println("Avertissement : dégradation de document constatée !");
+                        } else {
+                            out.println("Avertissement : retour en retard de plus de 2 semaines !");
+                        }
                         out.println(borrower.getName() + " est banni de la médiathèque pour 1 mois.");
                     }
+
+                } else {
+                    doc.retour();
+                    out.println("Document restitué avec succès");
                 }
 
-            } catch (NumberFormatException nbE) {
+            } catch (NumberFormatException e) {
                 out.println("Erreur : merci d'entrer un nombre");
             } catch (DocumentNotFoundException | RetourException e) {
                 out.println(e.getMessage());
             }
+
             super.getClientSocket().close();
         } catch (IOException e) {
             System.out.println("Erreur : " + e.getLocalizedMessage());

@@ -20,7 +20,6 @@ public class Library {
         abonnes = new HashMap<>();
     }
 
-    // Initialisation de la médiathèque avec des données en dur.
 
     public void initData() {
         // abonnés

@@ -12,36 +12,36 @@ public class ClientReservation {
     public void launch(String host) {
         Socket socket = null;
         try {
-            // Cree le stream pour lire du texte à partir du clavier (on pourrait aussi
-            // utiliser Scanner)
             BufferedReader clavier = new BufferedReader(new InputStreamReader(System.in));
-            // Cree une socket pour communiquer avec le service se trouvant sur la machine
-            // host au port PORT
             socket = new Socket(host, PORT_RESERVATION);
-            // Cree les streams pour lire et ecrire du texte dans cette socket
-            BufferedReader sin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter sout = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader sin  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter    sout = new PrintWriter(socket.getOutputStream(), true);
 
-            String line;
-            line = sin.readLine();
-            System.out.println(line);
+            System.out.println(sin.readLine());
 
-            System.out.print(sin.readLine());
-            String nbAb = clavier.readLine();
-            sout.println(nbAb);
             System.out.print(sin.readLine());
             sout.println(clavier.readLine());
 
             System.out.print(sin.readLine());
+            sout.println(clavier.readLine());
+
+            String line;
+            while ((line = sin.readLine()) != null) {
+                System.out.println(line);
+
+                if (line.contains("(oui/non)")
+                        || line.trim().endsWith(":")
+                        || line.trim().endsWith(": ")) {
+                    String rep = clavier.readLine();
+                    sout.println(rep != null ? rep : "");
+                }
+            }
+
         } catch (IOException e) {
             System.err.println(e.getLocalizedMessage());
         }
-        // Refermer dans tous les cas la socket
         try {
-            if (socket != null) {
-                socket.close();
-            }
-        } catch (IOException ignored) {
-        }
+            if (socket != null) socket.close();
+        } catch (IOException ignored) {}
     }
 }
