@@ -1,0 +1,89 @@
+@startuml
+!theme reddress-lightblue
+
+left to right direction
+skinparam linetype ortho
+
+
+package test #67C6E3{
+class ApplicationTest
+}
+
+
+package clients #67C6E3 {
+package types #5356FF{
+class ClientBorrow
+class ClientReservation
+}
+class ClientUnique
+}
+
+package server #67C6E3 {
+package documents #378CE7{
+class DocumentReservable
+interface Document << interface >>
+package types #5356FF{
+class DVD
+class Book
+}
+}
+
+package exceptions #378CE7{
+class SubscriberNotFoundException
+class DocumentReservedEmpruntException
+class DocumentNotFoundException
+class NotAdultEmpruntException
+class EmpruntException
+}
+package subscribers #378CE7{
+class Subscriber
+}
+
+package services #378CE7{
+package types #5356FF{
+class ServiceBorrow
+class ServiceReservation
+}
+class GenericService
+}
+package timertasks #378CE7{
+class ReservationCanceler
+}
+class BDLink
+class Server
+class Library
+class Application
+}
+
+Application                      "1" *-[#FE0000,plain]-> "library\n1" Library
+Application                       -[#1700FE,dashed]->  Library                          : "«create»"
+Application                       -[#1700FE,dashed]->  Server                           : "«create»"
+ApplicationTest                   -[#1700FE,dashed]->  Library                          : "«create»"
+BDLink                            -[#1700FE,dashed]->  Book                             : "«create»"
+BDLink                            -[#1700FE,dashed]->  DVD                              : "«create»"
+BDLink                            -[#1700FE,dashed]->  Subscriber                       : "«create»"
+Book                              -[#000082,plain]-^  DocumentReservable
+ClientUnique                      -[#1700FE,dashed]->  ClientBorrow                     : "«create»"
+ClientUnique                      -[#1700FE,dashed]->  ClientReservation                : "«create»"
+DVD                               -[#000082,plain]-^  DocumentReservable
+DVD                               -[#1700FE,dashed]->  NotAdultEmpruntException         : "«create»"
+DocumentReservable               "1" *-[#FE0000,plain]-> "bdLink\n1" BDLink
+DocumentReservable                -[#008200,dashed]-^  Document
+DocumentReservable                -[#1700FE,dashed]->  DocumentReservedEmpruntException : "«create»"
+DocumentReservable                -[#1700FE,dashed]->  EmpruntException                 : "«create»"
+DocumentReservable                -[#1700FE,dashed]->  ReservationCanceler              : "«create»"
+DocumentReservable               "1" *-[#FE0000,plain]-> "subscriber\n1" Subscriber
+DocumentReservedEmpruntException  -[#000082,plain]-^  EmpruntException
+GenericService                   "1" *-[#FE0000,plain]-> "library\n1" Library
+Library                           -[#1700FE,dashed]->  BDLink                           : "«create»"
+Library                          "1" *-[#FE0000,plain]-> "bdLink\n1" BDLink
+Library                          "1" *-[#FE0000,plain]-> "documents\n*" Document
+Library                           -[#1700FE,dashed]->  DocumentNotFoundException        : "«create»"
+Library                          "1" *-[#FE0000,plain]-> "subscribers\n*" Subscriber
+Library                           -[#1700FE,dashed]->  SubscriberNotFoundException      : "«create»"
+NotAdultEmpruntException          -[#000082,plain]-^  EmpruntException
+ReservationCanceler              "1" *-[#FE0000,plain]-> "doc\n1" DocumentReservable
+Server                           "1" *-[#FE0000,plain]-> "library\n1" Library
+ServiceBorrow                     -[#000082,plain]-^  GenericService
+ServiceReservation                -[#000082,plain]-^  GenericService
+@enduml
