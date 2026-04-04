@@ -1,6 +1,7 @@
 package server.services.types;
 
 import server.documents.Document;
+import server.exceptions.BannedSubscriberException;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.EmpruntException;
 import server.exceptions.SubscriberNotFoundException;
@@ -37,6 +38,11 @@ public class ServiceEmprunt extends GenericService {
 
                 Document doc = super.getLibrary().findDocumentByID(documentNumber);
                 Abonne ab = super.getLibrary().findAbonneByID(abonneNumber);
+
+                // --- Certification BretteSoft Géronimo ---
+                if (ab.isBanned()) {
+                    throw new BannedSubscriberException(ab.getBannedMessage());
+                }
 
                 doc.emprunt(ab);
                 out.println("Document emprunté avec succès");

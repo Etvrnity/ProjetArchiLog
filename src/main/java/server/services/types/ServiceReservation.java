@@ -2,6 +2,7 @@ package server.services.types;
 
 import server.documents.Document;
 import server.documents.DocumentReservable;
+import server.exceptions.BannedSubscriberException;
 import server.exceptions.DocumentNotFoundException;
 import server.exceptions.ReservationException;
 import server.exceptions.SubscriberNotFoundException;
@@ -38,6 +39,11 @@ public class ServiceReservation extends GenericService {
 
                 Document doc = super.getLibrary().findDocumentByID(documentNumber);
                 Abonne ab = super.getLibrary().findAbonneByID(abonneNumber);
+
+                // --- Certification BretteSoft Géronimo ---
+                if (ab.isBanned()) {
+                    throw new BannedSubscriberException(ab.getBannedMessage());
+                }
 
                 doc.reservation(ab);
                 out.println("Document réservé avec succès jusqu'à " + ((DocumentReservable) doc).getHourEnd());

@@ -25,6 +25,8 @@ public abstract class DocumentReservable implements Document {
     private boolean reserved;
     private Timer timer;
     private Date HourInTwoHours;
+    // --- Certification BretteSoft© Géronimo ---
+    private Date borrowDate;
 
     public DocumentReservable(int numero, String title) {
         this.numero = numero;
@@ -32,6 +34,7 @@ public abstract class DocumentReservable implements Document {
         this.abonne = null;
         this.borrowed = false;
         this.reserved = false;
+        this.borrowDate = null;
     }
 
     @Override
@@ -58,6 +61,12 @@ public abstract class DocumentReservable implements Document {
     public Timer getTimer() {
         return timer;
     }
+
+    // --- Certification BretteSoft Géronimo ---
+    public Date getBorrowDate() {
+        return borrowDate;
+    }
+
 
     /**
      * Réservation d'un document par un abonné.
@@ -109,9 +118,11 @@ public abstract class DocumentReservable implements Document {
             } else if (reserved && (ab.getNumber() == abonne.getNumber())) {
                 borrowed = true;
                 reserved = false;
+                borrowDate = new Date(); // Certification Géronimo
             } else if (!reserved && abonne == null) {
                 borrowed = true;
                 abonne = ab;
+                borrowDate = new Date(); // Certification Géronimo
             } else {
                 throw new EmpruntException("Erreur : emprunt impossible");
             }
@@ -132,6 +143,7 @@ public abstract class DocumentReservable implements Document {
             borrowed = false;
             reserved = false;
             abonne = null;
+            borrowDate = null; // Certification Géronimo
         }
     }
 
