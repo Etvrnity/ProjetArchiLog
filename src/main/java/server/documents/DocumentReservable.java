@@ -116,7 +116,8 @@ public abstract class DocumentReservable implements Document {
             timer = null;
         }
 
-        notifyWaitingSubscribers();
+
+        new Thread(this::notifyWaitingSubscribers).start();
     }
 
     public synchronized void cancelReservation() {
@@ -126,7 +127,8 @@ public abstract class DocumentReservable implements Document {
 
         notifyAll();
 
-        notifyWaitingSubscribers();
+
+        new Thread(this::notifyWaitingSubscribers).start();
     }
 
     public synchronized void addWaitingEmail(String email) {
@@ -171,7 +173,8 @@ public abstract class DocumentReservable implements Document {
             message.setText(body);
             Transport.send(message);
             System.out.println("[Mail] Envoyé à " + to + " — " + subject);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
+
             System.err.println("[Mail] Erreur d'envoi : " + e.getLocalizedMessage());
         }
     }

@@ -107,7 +107,6 @@ public class ServiceReservation extends GenericService {
         String rep = in.readLine();
         if (rep != null && rep.trim().equalsIgnoreCase("oui")) {
             out.println("Votre adresse email : ");
-            out.flush();
             String email = in.readLine();
             if (email != null && !email.isBlank()) {
                 docRes.addWaitingEmail(email.trim());
