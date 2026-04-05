@@ -12,7 +12,7 @@ class ApplicationTest
 
 package clients #67C6E3 {
 package types #5356FF{
-class ClientBorrow
+class ClientEmprunt
 class ClientReservation
 }
 class ClientUnique
@@ -41,7 +41,7 @@ class Subscriber
 
 package services #378CE7{
 package types #5356FF{
-class ServiceBorrow
+class ServiceEmprunt
 class ServiceReservation
 }
 class GenericService
@@ -49,7 +49,6 @@ class GenericService
 package timertasks #378CE7{
 class ReservationCanceler
 }
-class BDLink
 class Server
 class Library
 class Application
@@ -58,16 +57,13 @@ class Application
 Application                      "1" *-[#FE0000,plain]-> "library\n1" Library
 Application                       -[#1700FE,dashed]->  Library                          : "«create»"
 Application                       -[#1700FE,dashed]->  Server                           : "«create»"
-ApplicationTest                   -[#1700FE,dashed]->  Library                          : "«create»"
-BDLink                            -[#1700FE,dashed]->  Book                             : "«create»"
-BDLink                            -[#1700FE,dashed]->  DVD                              : "«create»"
-BDLink                            -[#1700FE,dashed]->  Subscriber                       : "«create»"
+ApplicationTest                   -[#1700FE,dashed]->   Book                             : "«create»"
+Subscriber                       : "«create»"
 Book                              -[#000082,plain]-^  DocumentReservable
-ClientUnique                      -[#1700FE,dashed]->  ClientBorrow                     : "«create»"
+ClientUnique                      -[#1700FE,dashed]->  ClientEmprunt                     : "«create»"
 ClientUnique                      -[#1700FE,dashed]->  ClientReservation                : "«create»"
 DVD                               -[#000082,plain]-^  DocumentReservable
 DVD                               -[#1700FE,dashed]->  NotAdultEmpruntException         : "«create»"
-DocumentReservable               "1" *-[#FE0000,plain]-> "bdLink\n1" BDLink
 DocumentReservable                -[#008200,dashed]-^  Document
 DocumentReservable                -[#1700FE,dashed]->  DocumentReservedEmpruntException : "«create»"
 DocumentReservable                -[#1700FE,dashed]->  EmpruntException                 : "«create»"
@@ -75,8 +71,6 @@ DocumentReservable                -[#1700FE,dashed]->  ReservationCanceler      
 DocumentReservable               "1" *-[#FE0000,plain]-> "subscriber\n1" Subscriber
 DocumentReservedEmpruntException  -[#000082,plain]-^  EmpruntException
 GenericService                   "1" *-[#FE0000,plain]-> "library\n1" Library
-Library                           -[#1700FE,dashed]->  BDLink                           : "«create»"
-Library                          "1" *-[#FE0000,plain]-> "bdLink\n1" BDLink
 Library                          "1" *-[#FE0000,plain]-> "documents\n*" Document
 Library                           -[#1700FE,dashed]->  DocumentNotFoundException        : "«create»"
 Library                          "1" *-[#FE0000,plain]-> "subscribers\n*" Subscriber
@@ -84,6 +78,6 @@ Library                           -[#1700FE,dashed]->  SubscriberNotFoundExcepti
 NotAdultEmpruntException          -[#000082,plain]-^  EmpruntException
 ReservationCanceler              "1" *-[#FE0000,plain]-> "doc\n1" DocumentReservable
 Server                           "1" *-[#FE0000,plain]-> "library\n1" Library
-ServiceBorrow                     -[#000082,plain]-^  GenericService
+ServiceEmprunt                    -[#000082,plain]-^  GenericService
 ServiceReservation                -[#000082,plain]-^  GenericService
 @enduml
